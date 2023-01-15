@@ -14,7 +14,7 @@ pointgen <- function(map, rhos, beta = c(5, 5, 5, 5), lag=T){
     b1 <- rep(beta, NN)
     
     mu<-10
-    x1<-rnorm(N, mu,0.5*mu)
+    x1<-rnorm(N, mu,0.2*mu)
     
     eps<-rnorm(N,0,1)
     

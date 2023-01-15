@@ -8,9 +8,9 @@ set.seed(1234)
 #####################
 
 # Input data
-NN=c(2000*2, 2400*2, 1000*2, 200*2)
+NN=c(2000, 2400, 1000, 200)*2
 nn=c(70, 30, 150, 20)
-beta = c(-2, 2, -3, 3)
+beta = c(-1, 2, 1, -2)
 rhos = seq(0, 0.8, 0.2)
 zita = seq(0, 1, 0.2)
 
@@ -32,12 +32,12 @@ ps <- postsampling(NN, nn, zita = zita)
 ps
 
 # Compute in parallel the simulation - return a list with all the objects generated
-parallel <- psamplegen(500, point, ps, wmat="k", lag=F)
+parallel <- psamplegen(500, point, ps, wmat="i", lag=F)
 
 parallel
 # the results of this function are saved in the /simulation subfolder
 # so it is possible to load all the results without running the simulation
-#saveRDS(parallel, 'simulations/1_d.rds')
+saveRDS(parallel, '1_i_error.rds')
 
 #parallel <- readRDS('simulations/1.rds')
 
@@ -101,7 +101,7 @@ ggplot(agg) +
   geom_line(aes(zita, var, color='blue')) +
   geom_line(aes(zita, mse, color='black')) +
   theme_bw()+
-  coord_cartesian(ylim=c(0, 0.5)) +
+ # coord_cartesian(ylim=c(0, 1)) +
   theme(
     legend.position="bottom",
     axis.title.y = element_blank(), 
@@ -111,3 +111,4 @@ ggplot(agg) +
   ggtitle("Simulation") 
 
 print(agg)
+
