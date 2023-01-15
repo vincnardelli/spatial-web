@@ -1,4 +1,4 @@
-samplegen <- function(point, ps, wmat="d", matrix=NULL){
+samplegen <- function(point, ps, wmat="d", matrix=NULL, lag=T){
   nn <- ps$nn
   data <- point$data
   NN <- point$NN
@@ -23,7 +23,7 @@ samplegen <- function(point, ps, wmat="d", matrix=NULL){
   }else if(wmat == "i"){ # inverse distance
     k1 <- knn2nb(knearneigh(coord))
     max <- max(unlist(nbdists(k1,coord)))
-    w_list <- mat2listw(mat, style="W")
+    w_list <- mat2listw(mat, style="W") #TOFIX
   }
 
   nb.dist.band <- dnearneigh(coord, 0, Inf)
@@ -33,7 +33,13 @@ samplegen <- function(point, ps, wmat="d", matrix=NULL){
   
   # r <- list(data=data_sample, w=w_list, genrho = point$genrho, NN=NN, ps=ps, 
   #           model = lagsarlm('y~x1-1', data_sample, w_list), ols = as.numeric(lm('y~x1', data_sample)$coefficients[2]))
+  
+  if(lag){
+    model <- lagsarlm('y~x1-1', data_sample, w_list)
+  }else{
+    model <- errorsarlm('y~x1-1', data_sample, w_list)
+  }
   r <- list(genrho = point$genrho, NN=NN, ps=ps,
-            model = lagsarlm('y~x1-1', data_sample, w_list))#, ols = as.numeric(lm('y~x1', data_sample)$coefficients[2]))
+            model = model)#, ols = as.numeric(lm('y~x1', data_sample)$coefficients[2]))
   return(r)
 }

@@ -1,4 +1,4 @@
-psamplegen <- function(t, point, ps, wmat = "d", matrix=NULL){
+psamplegen <- function(t, point, ps, wmat = "d", matrix=NULL, lag=T){
   
   
   indexes <- expand.grid(point_index=1:length(point), 
@@ -16,15 +16,16 @@ psamplegen <- function(t, point, ps, wmat = "d", matrix=NULL){
   opts <- list(progress=progress)
   
   result <- 
-    foreach(i=1:nrow(indexes), .packages="spdep", 
+    foreach(i=1:nrow(indexes), .packages=c("spdep", "spatialreg"), 
             .export="samplegen", .options.snow=opts) %dopar% {
-              samplegen(point[indexes$point_index[i]][[1]], ps=ps[indexes$ps_index[i]][[1]], wmat = wmat, matrix=matrix)
+              samplegen(point[indexes$point_index[i]][[1]], ps=ps[indexes$ps_index[i]][[1]], wmat = wmat, matrix=matrix,
+                        lag=lag)
             }
   
   close(pb)
   stopCluster(cl)
   
-  saveRDS(result, paste0("simulations/parallel_", as.integer(Sys.time()), ".rds"))
+  #saveRDS(result, paste0("simulations/parallel_", as.integer(Sys.time()), ".rds"))
   
   return(result)
 }

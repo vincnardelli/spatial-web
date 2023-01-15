@@ -1,4 +1,4 @@
-pointgen <- function(map, rhos, beta = c(5, 5, 5, 5)){
+pointgen <- function(map, rhos, beta = c(5, 5, 5, 5), lag=T){
   pointlist <- list()
   for(i in 1:length(rhos)){
     rho <- rhos[i]
@@ -18,7 +18,13 @@ pointgen <- function(map, rhos, beta = c(5, 5, 5, 5)){
     
     eps<-rnorm(N,0,1)
     
-    y<-solve(I-rho*w)%*%(b1*x1+eps)
+    if(lag){
+      y<-solve(I-rho*w)%*%(b1*x1+eps)  
+    }else{
+      eps2 <- (rho*w)%*%eps
+      y <- b1*x1+eps2
+    }
+    
     w_list<-mat2listw(w)
     
     truemu <- sum(beta*NN)/sum(NN)
